@@ -1,5 +1,5 @@
 # Set minimum required version of CMake
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.13)
 
 # Include build functions from Pico SDK
 include(pico_sdk_import.cmake)
@@ -8,33 +8,46 @@ include(pico_sdk_import.cmake)
 include(FreeRTOS_Kernel_import.cmake)
 
 # Set name of project (as PROJECT_NAME) and C/C++ standards
-project(spkb C CXX ASM)
+project(spkb_project C CXX ASM)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 
 # Creates a pico-sdk subdirectory in our project for the libraries
 pico_sdk_init()
 
-# Tell CMake where to find the executable source file
-add_executable(spkb
+add_library(spkb_common INTERFACE)
+target_sources(spkb_common INTERFACE 
     src/main.c
+    src/freertos/hooks.c
+    src/keyboard/matrix.c
 )
 
-target_include_directories(spkb PUBLIC
+target_include_directories(spkb_common INTERFACE
     ${CMAKE_CURRENT_LIST_DIR}/include
+    src/
+    src/keyboard
 )
 
 # Link to pico_stdlib (gpio, time, etc. functions)
-target_link_libraries(spkb
+target_link_libraries(spkb_common INTERFACE
     pico_stdlib
     hardware_gpio
+    hardware_i2c
     FreeRTOS-Kernel
     FreeRTOS-Kernel-Heap4
 )
 
-# Enable usb output, disable uart output
-pico_enable_stdio_usb(spkb 1)
-pico_enable_stdio_uart(spkb 0)
+add_executable(spkb_master)
+target_link_libraries(spkb_master spkb_common)
+pico_enable_stdio_usb(spkb_master 1)
+pico_enable_stdio_uart(spkb_master 0)
+pico_add_extra_outputs(spkb_master)
 
-# Create map/bin/hex/uf2 files
-pico_add_extra_outputs(spkb)
+add_executable(spkb_slave)
+target_link_libraries(spkb_slave spkb_common)
+target_compile_definitions(spkb_slave PRIVATE
+        IS_SLAVE=1
+)
+pico_enable_stdio_usb(spkb_slave 1)
+pico_enable_stdio_uart(spkb_slave 0)
+pico_add_extra_outputs(spkb_slave)
