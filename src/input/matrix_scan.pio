@@ -1,0 +1,62 @@
+.program matrix_scan
+
+.wrap_target
+    pull
+    in NULL, 32
+    set y, 0
+    set x, 4
+
+colloop:
+    out pins, 5 [31]
+    nop [31]
+    in pins, 6
+    jmp x-- colloop
+    
+    set x, 3
+    in x, 2
+
+    mov ISR, ! ISR
+
+    push
+.wrap
+
+% c-sdk {
+#include "hardware/gpio.h"
+
+static inline void matrix_scan_init(PIO pio, uint sm, uint offset, uint ropin, uint rocount, uint cipin, uint cicount)
+{
+    pio_sm_config c = matrix_scan_program_get_default_config(offset);
+
+    for (int i = 0; i < rocount; i++)
+    {
+        pio_gpio_init(pio, ropin + i);
+        
+    }
+
+    for (int i = 0; i < cicount; i++)
+    {
+        pio_gpio_init(pio, cipin + i);
+        gpio_pull_up(cipin + i);
+    }
+
+
+    pio_sm_set_consecutive_pindirs(pio, sm, ropin, rocount, true);
+    pio_sm_set_consecutive_pindirs(pio, sm, cipin, cicount, false);
+
+    sm_config_set_in_pins(&c, cipin);
+    sm_config_set_out_pins(&c, ropin, rocount);
+
+    pio_sm_init(pio, sm, offset, &c);
+}
+
+static inline uint32_t matrix_scan ( PIO pio, uint sm )
+{
+    pio->txf[sm] = 0b11111110111110111110111110111110;
+    while (pio_sm_is_rx_fifo_empty(pio, sm))
+    {
+        tight_loop_contents();
+    }
+    return (uint32_t) pio->rxf[sm];
+}
+
+%}

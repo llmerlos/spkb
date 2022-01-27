@@ -19,19 +19,23 @@ add_library(spkb_common INTERFACE)
 target_sources(spkb_common INTERFACE 
     src/main.c
     src/freertos/hooks.c
-    src/keyboard/matrix.c
+    src/input/matrix.c
 )
 
 target_include_directories(spkb_common INTERFACE
     ${CMAKE_CURRENT_LIST_DIR}/include
     src/
-    src/keyboard
+    src/input
 )
+
+# Create C header file with the name <pio program>.pio.h
+pico_generate_pio_header(spkb_common ${CMAKE_CURRENT_LIST_DIR}/src/input/matrix_scan.pio)
 
 # Link to pico_stdlib (gpio, time, etc. functions)
 target_link_libraries(spkb_common INTERFACE
     pico_stdlib
     hardware_gpio
+    hardware_pio
     hardware_i2c
     FreeRTOS-Kernel
     FreeRTOS-Kernel-Heap4
