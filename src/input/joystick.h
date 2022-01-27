@@ -12,13 +12,6 @@
 extern "C" {
 #endif
 
-enum adc_ch {
-    ADC_CH26 = 0,
-    ADC_CH27 = 1,
-    ADC_CH28 = 2,
-    ADC_CH29 = 3
-};
-
 typedef struct joystick_t {
     uint ch_x;
     uint ch_y;
