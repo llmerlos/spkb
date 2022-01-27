@@ -6,37 +6,41 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
 #include "hardware/pio.h"
+#include "hardware/adc.h"
 
 #include "utils.h"
 
 #include "matrix.h"
+#include "joystick.h"
 
 
 void brain ( void* param )
 {
-    matrix_pio_t matrix = matrix_pio_init_default();
+    matrix_handle_t matrix = matrix_init_default();
+    joystick_handle_t joystick = joystick_init_default();
 
-    uint32_t previous_scan = 0;
+    matrix_result_t previous_scan = 0;
     for (;;)
     {
-        uint32_t result = matrix_scan(matrix.pio, matrix.sm);
 
-        if (result != previous_scan)
-            printf(PRINTF_BINARY_PATTERN_INT32"\n", PRINTF_BYTE_TO_BINARY_INT32(result));
-        previous_scan = result;
+        
+        matrix_result_t matrix_result = matrix_scan(matrix);
+        joystick_result_t joystick_result = joystick_scan(joystick);
+
+        printf(PRINTF_BINARY_PATTERN_INT32"\t", PRINTF_BYTE_TO_BINARY_INT32(matrix_result));
+        printf("X: %.04f Y: %.04f\n", joystick_result.x, joystick_result.y);
+
+        previous_scan = matrix_result;
         vTaskDelay(pdMS_TO_TICKS(5));
     }
 }
 
-void main( void ) 
+void main ( void ) 
 {
     stdio_init_all();
 
     xTaskCreate(brain, "BRAIN", 1024*10, NULL, tskIDLE_PRIORITY+5, NULL);
 
-    printf("Core %d: Launching FreeRTOS scheduler\n", get_core_num());
-    /* Start the tasks and timer running. */
     vTaskStartScheduler();
-    /* shoulxd never reach here */
     panic_unsupported();
 }

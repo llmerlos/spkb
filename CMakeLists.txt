@@ -20,6 +20,7 @@ target_sources(spkb_common INTERFACE
     src/main.c
     src/freertos/hooks.c
     src/input/matrix.c
+    src/input/joystick.c
 )
 
 target_include_directories(spkb_common INTERFACE
@@ -36,6 +37,7 @@ target_link_libraries(spkb_common INTERFACE
     pico_stdlib
     hardware_gpio
     hardware_pio
+    hardware_adc
     hardware_i2c
     FreeRTOS-Kernel
     FreeRTOS-Kernel-Heap4

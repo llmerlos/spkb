@@ -1,4 +1,4 @@
-.program matrix_scan
+.program matrix_scan_pio
 
 .wrap_target
     pull
@@ -23,9 +23,9 @@ colloop:
 % c-sdk {
 #include "hardware/gpio.h"
 
-static inline void matrix_scan_init(PIO pio, uint sm, uint offset, uint ropin, uint rocount, uint cipin, uint cicount)
+static inline void matrix_scan_pio_init(PIO pio, uint sm, uint offset, uint ropin, uint rocount, uint cipin, uint cicount)
 {
-    pio_sm_config c = matrix_scan_program_get_default_config(offset);
+    pio_sm_config c = matrix_scan_pio_program_get_default_config(offset);
 
     for (int i = 0; i < rocount; i++)
     {
@@ -49,7 +49,7 @@ static inline void matrix_scan_init(PIO pio, uint sm, uint offset, uint ropin, u
     pio_sm_init(pio, sm, offset, &c);
 }
 
-static inline uint32_t matrix_scan ( PIO pio, uint sm )
+static inline uint32_t matrix_scan_pio ( PIO pio, uint sm )
 {
     pio->txf[sm] = 0b11111110111110111110111110111110;
     while (pio_sm_is_rx_fifo_empty(pio, sm))
