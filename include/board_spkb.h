@@ -5,14 +5,14 @@
 #define BOARD_NROW   5
 
 #define BOARD_COL_START_PIN  0
-#define BOARD_ROW_START_PIN  6
+#define BOARD_ROW_START_PIN  8
 
 #define BOARD_JOYSTICK_X    29
 #define BOARD_JOYSTICK_Y    28
 #define BOARD_JOYSTICK_SW   27
 
-#define BOARD_LED       14
-#define BOARD_NLED      16
+#define BOARD_LED       6
+#define BOARD_NLED      30
 
 #define BOARD_I2C_SDA   15
 #define BOARD_I2C_SCL   14

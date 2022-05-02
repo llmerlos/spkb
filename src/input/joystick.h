@@ -2,15 +2,12 @@
 #define JOYSTICK_H
 
 #include "pico.h"
-#include <stdio.h>
 #include "pico/stdlib.h"
+#include <stdlib.h>
+#include <stdio.h>
 #include "hardware/adc.h"
 
 #include "board_spkb.h"
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 typedef struct joystick_t {
     uint ch_x;
@@ -32,6 +29,5 @@ typedef struct joystick_result_t {
 joystick_handle_t joystick_init ( uint pin_x, uint pin_y );
 joystick_handle_t joystick_init_default ();
 joystick_result_t joystick_scan ( joystick_handle_t joystick );
-
 
 #endif

@@ -18,6 +18,7 @@ pico_sdk_init()
 add_library(spkb_common INTERFACE)
 target_sources(spkb_common INTERFACE 
     src/main.c
+    src/keyboard.c
     src/freertos/hooks.c
     src/input/matrix.c
     src/input/joystick.c

@@ -1,6 +1,11 @@
 #ifndef KEYCODES_H
 #define KEYCODES_H
 
+
+#define KEY_IS_STNRD(k) ((k >= KB_NOEV) && (k <= KB_RGUI))
+#define KEY_IS_LAYER(k) ((k >= KC_LFK1) && (k <= KC_LFK2))
+
+
 enum keycode_spec {
     KB_NOEV = 0x00, /* Reserved ( No event indicated) */
     KB_ERRO	= 0x01,	/* ErrorRollOver */
@@ -185,7 +190,6 @@ enum keycode_custom {
     /* Layer Function Keys */
     KC_LFK1, /* Layer Function Key 1 */
     KC_LFK2, /* Layer Function Key 2 */
-    KC_LFK3, /* Layer Function Key 3 */
     /* LED Functions */
     KC_LEDU, /* LED Brightness Up */
     KC_LEDD, /* LED Brightness Down */

@@ -2,16 +2,13 @@
 #define LEDS_H
 
 #include "pico.h"
-#include <stdio.h>
 #include "pico/stdlib.h"
+#include <stdlib.h>
+#include <stdio.h>
 #include "hardware/pio.h"
 #include "leds_show.pio.h"
 
 #include "board_spkb.h"
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 typedef struct leds_t {
     PIO pio;

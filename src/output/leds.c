@@ -37,14 +37,19 @@ leds_handle_t leds_init_default ()
 static int t = 0;
 void leds_show ( leds_handle_t leds )
 {
+    static int status = 1;
     for (uint i = 0; i < BOARD_NLED; i++) {
-        if (i > t)
+        if (status == 1)
         {
+            printf("1");
             leds_put_pixel(leds, urgb_u32(0, 0, 0xff));
         } else {
+            printf("0");
             leds_put_pixel(leds, urgb_u32(0, 0, 0));
         }
     }
+    status = 1 - status;
+    printf("\n");
     t++;
     t %= BOARD_NLED;
 }

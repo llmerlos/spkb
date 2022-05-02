@@ -4,14 +4,17 @@
 #include <stdio.h>
 #include "keycodes.h"
 
-#define N_LAYERS    4
+#define N_LAYERS    3
 #define N_ROWS      5
 #define N_COLS      6
+
+#define SPKB_LEFT   0
+#define SPKB_RIGHT  1
 
 #define NO_KEY      KC_NTH
 
 
-uint8_t keymap[2][N_LAYERS][N_ROWS][N_COLS] = {
+static uint8_t keymap[2][N_LAYERS][N_ROWS][N_COLS] = {
     /* LEFT SIDE */
     {
         /*  BASE LAYER */
@@ -27,16 +30,16 @@ uint8_t keymap[2][N_LAYERS][N_ROWS][N_COLS] = {
             { KC_LEDU , KB_F1   , KB_F2   , KB_F3   , KB_F4   , KB_F5   },
             { KC_LEDD , KB_F6   , KB_F7   , KB_F8   , KB_F9   , KB_F10  },
             { KB_CLCK , KB_F11  , KB_F12  , NO_KEY  , NO_KEY  , NO_KEY  },
-            { NO_KEY  , KB_VOUP , KB_VODW , KB_MUTE , NO_KEY  , NO_KEY  },
-            { NO_KEY  , NO_KEY  , KB_RGUI , KC_LFK1 , NO_KEY  , NO_KEY  }
+            { KB_LSHF , KB_VOUP , KB_VODW , KB_MUTE , NO_KEY  , NO_KEY  },
+            { KB_LCTL , KB_LALT , KB_LGUI , KC_LFK1 , NO_KEY  , KB_SPCB }
         },
         /*  FN2 LAYER */
         {
             { NO_KEY  , NO_KEY  , NO_KEY  , NO_KEY  , NO_KEY  , NO_KEY  },
             { NO_KEY  , NO_KEY  , NO_KEY  , NO_KEY  , NO_KEY  , NO_KEY  },
             { NO_KEY  , NO_KEY  , NO_KEY  , NO_KEY  , NO_KEY  , NO_KEY  },
-            { NO_KEY  , NO_KEY  , NO_KEY  , NO_KEY  , NO_KEY  , NO_KEY  },
-            { NO_KEY  , NO_KEY  , NO_KEY  , NO_KEY  , NO_KEY  , NO_KEY  }
+            { KB_LSHF , NO_KEY  , NO_KEY  , NO_KEY  , NO_KEY  , NO_KEY  },
+            { KB_LCTL , KB_LALT , KB_LGUI , KC_LFK1 , NO_KEY  , KB_SPCB }
         }
     },
     /*  RIGHT SIDE */
@@ -55,7 +58,7 @@ uint8_t keymap[2][N_LAYERS][N_ROWS][N_COLS] = {
             { KB_HOME , KB_END  , KB_PGDW , KB_PGUP , NO_KEY  , NO_KEY  },
             { KB_LARR , KB_DARR , KB_UARR , KB_RARR , NO_KEY  , NO_KEY  },
             { KB_LBRC , KB_RBRC , NO_KEY  , NO_KEY  , NO_KEY  , NO_KEY  },
-            { NO_KEY  , NO_KEY  , KC_LFK1 , NO_KEY  , KB_MENU , NO_KEY  }
+            { KB_ENTR , KB_EQUL , KC_LFK1 , KC_LFK2 , KB_RALT , KB_RCTL }
         },
         /*  FN2 LAYER */
         {
@@ -63,9 +66,26 @@ uint8_t keymap[2][N_LAYERS][N_ROWS][N_COLS] = {
             { NO_KEY  , KP_4    , KP_5    , KP_6    , KP_PLUS , NO_KEY  },
             { NO_KEY  , KP_1    , KP_2    , KP_3    , KP_ASTX , NO_KEY  },
             { NO_KEY  , NO_KEY  , KP_0    , KP_PERD , KP_SLSH , NO_KEY  },
-            { KP_ENTR , NO_KEY  , NO_KEY  , KC_LFK2 , NO_KEY  , NO_KEY  }
+            { NO_KEY  , NO_KEY  , KC_LFK1 , KC_LFK2 , KP_ENTR , NO_KEY  }
         }
     }
+};
+
+static uint32_t find_key_bitmask ( uint8_t key, uint8_t side )
+{
+    uint32_t mask = 0;
+    for (int ri = 0; ri < N_ROWS; ri++)
+    {
+        for (int ci = 0; ci < N_COLS; ci++)
+        {
+            if (keymap[side][0][ri][ci] == key)
+            {
+                mask = (1 << (ri * N_COLS + ci));
+            }
+        }
+    }
+
+    return mask;
 }
 
 

@@ -9,6 +9,10 @@
 colloop:
     out pins, 5 [31]
     nop [31]
+    nop [31]
+    nop [31]
+    nop [31]
+    nop [31]
     in pins, 6
     jmp x-- colloop
     
@@ -51,7 +55,7 @@ static inline void matrix_scan_pio_init(PIO pio, uint sm, uint offset, uint ropi
 
 static inline uint32_t matrix_scan_pio ( PIO pio, uint sm )
 {
-    pio->txf[sm] = 0b11111110111110111110111110111110;
+    pio->txf[sm] = 0b11111111111011101110111011101111;
     while (pio_sm_is_rx_fifo_empty(pio, sm))
     {
         tight_loop_contents();

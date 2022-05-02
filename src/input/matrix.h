@@ -2,16 +2,13 @@
 #define MATRIX_H
 
 #include "pico.h"
-#include <stdio.h>
 #include "pico/stdlib.h"
+#include <stdlib.h>
+#include <stdio.h>
 #include "hardware/pio.h"
 #include "matrix_scan.pio.h"
 
 #include "board_spkb.h"
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 typedef struct matrix_t {
     PIO pio;
